@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-Hans-CN"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorator="components/basic" xmlns:layout="http://www.w3.org/1999/xhtml">
+<head>
+    <title th:text="${site.siteName + ' | ' + page.pageTitle}">AdminLTE 3 | DataTables</title>
+
+    <!-- DataTables -->
+    <link rel="stylesheet" th:href="@{~/plugins/datatables-bs4/css/dataTables.bootstrap4.css}">
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" th:href="@{~/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css}">
+    <!-- Buttons -->
+    <link rel="stylesheet" th:href="@{~/plugins/buttons/buttons.css}">
+    <link rel="stylesheet" th:href="@{~/dist/css/my.css}">
+</head>
+<body>
+<div class="wrapper">
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+
+        <div class="col-sm-6">
+            <h1 layout:fragment="page-content-header-title" th:text="${page.pageTitle}">DataTables</h1>
+        </div>
+
+        <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right" layout:fragment="page-content-header-thispath">
+                <li class="breadcrumb-item"><a href="#" th:href="@{~/}">首页</a></li>
+                <li class="breadcrumb-item active" th:text="${page.pageTitle}">DataTables</li>
+            </ol>
+        </div>
+
+        </section>
+
+        <!-- Main content -->
+        <!--/*--> 业务界面写在这个section内。 <!--*/-->
+        <section class="content" layout:fragment="main-content">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title" id="theTableCardTitle" th:text="${page.tableTitle}">DataTable with minimal features & hover style</h3>
+
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <form id="zjkscx-form">
+                                        <div class="box-body">
+                                            <canvas id="can1" class="flot-overlay" width="660" height="375" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 528.4px; height: 300px;"></canvas><canvas class="flot-overlay" width="660" height="375" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 528.4px; height: 300px;"></canvas>
+                                        </div>
+                                    </form>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+    </div>
+    <!-- /.row -->
+
+    </section>
+    <!-- /.content -->
+</div>
+
+</div>
+<!-- ./wrapper -->
+
+
+<th:block layout:fragment="add-js">
+    <!-- DataTables -->
+    <script src="/plugins/datatables/jquery.dataTables.js"></script>
+    <script src="/plugins/datatables-bs4/js/dataTables.bootstrap4.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="/plugins/sweetalert2/sweetalert2.min.js"></script>
+    <!-- InputMask -->
+    <script src="/plugins/moment/moment.min.js"></script>
+    <script src="/plugins/inputmask/min/jquery.inputmask.bundle.min.js"></script>
+    <!-- date-range-picker -->
+    <script src="/plugins/daterangepicker/daterangepicker.js"></script>
+    <!-- page script -->
+    <!--/*--> 业务使用的js放置到resources/sattic/dist/js下，通过controller中PageUtils.bindPageData方法传入路径 <!--*/-->
+    <script th:src="@{~/dist/js/{jslink}(jslink=${pagejs})}"></script>
+
+</th:block>
+<script type="text/javascript">
+    var can1 = document.getElementById("can1");
+    var ctx = can1.getContext("2d");
+    var nums = [26,15,12,5,25,17];
+    var colors = ["#983335","#77963f","#5d437c","#35859f","#d1702f","#365e96"];
+    var start = 0;
+    var end = 0;
+    ctx.translate(400,350);
+    //绘制圆饼
+    function pieChart(){
+        for (var i = 0;i < nums.length; i ++){
+            ctx.beginPath();
+            ctx.moveTo(0,0);
+            end += nums[i]/50*Math.PI;//终止角度
+            ctx.strokeStyle = "white";
+            ctx.fillStyle = colors[i];
+            ctx.arc(0,0,200,start,end);
+            ctx.fill();
+            ctx.closePath();
+            ctx.stroke();
+            start += nums[i]/50*Math.PI;//起始角度
+        }
+    }
+    //绘制圆饼上的数值
+    function pieNum(){
+        for (var i = 0;i < nums.length; i ++){
+            start = nums[i]/50*Math.PI/2;
+            ctx.rotate(end+start);//旋转数值
+            ctx.font = "25px scans-serif";
+            ctx.fillStyle = "#000";
+            ctx.fillText(nums[i]+"%",140,0);
+            end = nums[i]/50*Math.PI/2;
+        }
+    }
+    ctx.rotate(-Math.PI/6);//旋转一定角度更加自然
+    pieChart();
+    pieNum();
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-Hans-CN"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorator="components/basic" xmlns:layout="http://www.w3.org/1999/xhtml">
+<head>
+    <title th:text="${site.siteName + ' | ' + page.pageTitle}">AdminLTE 3 | DataTables</title>
+
+    <!-- DataTables -->
+    <link rel="stylesheet" th:href="@{~/plugins/datatables-bs4/css/dataTables.bootstrap4.css}">
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" th:href="@{~/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css}">
+    <!-- Buttons -->
+    <link rel="stylesheet" th:href="@{~/plugins/buttons/buttons.css}">
+    <link rel="stylesheet" th:href="@{~/dist/css/my.css}">
+</head>
+<body>
+<div class="wrapper">
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+
+        <div class="col-sm-6">
+            <h1 layout:fragment="page-content-header-title" th:text="${page.pageTitle}">DataTables</h1>
+        </div>
+
+        <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right" layout:fragment="page-content-header-thispath">
+                <li class="breadcrumb-item"><a href="#" th:href="@{~/}">首页</a></li>
+                <li class="breadcrumb-item active" th:text="${page.pageTitle}">DataTables</li>
+            </ol>
+        </div>
+
+        </section>
+
+        <!-- Main content -->
+        <!--/*--> 业务界面写在这个section内。 <!--*/-->
+        <section class="content" layout:fragment="main-content">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title" id="theTableCardTitle" th:text="${page.tableTitle}">DataTable with minimal features & hover style</h3>
+
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>选择考次</label>
+                                    <form id="examround-form">
+                                    <select id="mySelect" name="examround" class="form-control select2 select2-hidden-accessible"  style="width: 100%;" data-select2-id="1" tabindex="-1" aria-hidden="true">
+                                        <option selected="selected" data-select2-id="3">选择考次</option>
+                                    </select>
+                                    <div class="modal-footer justify-content-between">
+                                        <button type="button" class="btn btn-primary">确认</button>
+                                    </div>
+                                    </form>
+                                </div>
+
+                            </div>
+                            </div>
+                                </div>
+                                <!-- /.modal-content -->
+                            </div>
+
+                    <!-- /.card -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+
+        </section>
+        <!-- /.content -->
+    </div>
+
+</div>
+<!-- ./wrapper -->
+
+
+<th:block layout:fragment="add-js">
+    <!-- DataTables -->
+    <script src="/plugins/datatables/jquery.dataTables.js"></script>
+    <script src="/plugins/datatables-bs4/js/dataTables.bootstrap4.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="/plugins/sweetalert2/sweetalert2.min.js"></script>
+    <!-- InputMask -->
+    <script src="/plugins/moment/moment.min.js"></script>
+    <script src="/plugins/inputmask/min/jquery.inputmask.bundle.min.js"></script>
+    <!-- date-range-picker -->
+    <script src="/plugins/daterangepicker/daterangepicker.js"></script>
+    <!-- page script -->
+    <!--/*--> 业务使用的js放置到resources/sattic/dist/js下，通过controller中PageUtils.bindPageData方法传入路径 <!--*/-->
+    <script th:src="@{~/dist/js/{jslink}(jslink=${pagejs})}"></script>
+
+</th:block>
+<script>
+    let exanroundJq = $("#examround-form [name=examround]");
+    $("#examround-form [name=examround]").click(function () {
+        var url="/examround/selectExam"; //访问后台去数据库查询select的选项,此处需填写后台接口路径
+        $.ajax({
+            type:"get",
+            url:url,
+            success:function(userList){
+                var unitObj=document.getElementById("mySelect"); //页面上的<html:select>元素
+                if(userList.code==9999){
+                    msgJq.addClass('text-danger');
+                    msgJq.text(userList.message);
+                }
+                $("#mySelect").empty();
+                unitObj.options.add(new Option("请选考次","",true,true));
+                if(userList!=null){ //后台传回来的select选项
+                    for(var i=0;i<userList.data.length;i++){
+                        //遍历后台传回的结果，一项项往select中添加option
+                        unitObj.options.add(new Option(userList.data[i].examround,userList.data[i].examround));
+                    }
+                }
+            },
+            error:function(){
+                msgJq.alert('Error');
+            }
+        })
+    });
+
+
+    $("#examround-form button").click(function () {
+
+
+
+        var options=$("#mySelect option:selected");//获取选中的项
+        var optionValue = options.val();
+        var optionText = options.text();
+        // alert("jquery方法拿到选中项的值： " + options.val());
+        // alert("jquery方法拿到选中项的文本： " + options.text());
+
+
+        let exanround = exanroundJq.val();
+        let url = "/examround/addExam";
+        let dataObj = {
+            value: optionValue,
+            text: optionText
+        }
+
+        $.post(url, dataObj, function (jsonObject) {
+            if (jsonObject.hasOwnProperty('code')) {
+                if (jsonObject.code === 1111) {
+                    alert(jsonObject.message);
+                    location.replace('/');
+                }else{
+                    // msgJq.removeClass('text-danger');
+                    // msgJq.addClass('text-info');
+                    alert(jsonObject.message);
+                }
+            }
+        });
+
+
+    });
+    </script>
+</body>
+</html>
