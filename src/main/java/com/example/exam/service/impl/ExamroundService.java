@@ -51,6 +51,7 @@ public class ExamroundService implements IExamroundService {
      */
     @Override
     public void updateExam(String examRound) {
+        examroundMapper.updateExamOld();
         examroundMapper.updateExam(examRound);
     }
 

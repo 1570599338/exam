@@ -43,7 +43,12 @@ $("#examround-form button").click(function () {
         value: optionValue,
         text: optionText
     }
+  if(!optionValue || !optionText){
+      alert("请正确切换考次！");
 
+      return false;
+
+  }
     $.post(url, dataObj, function (jsonObject) {
         if (jsonObject.hasOwnProperty('code')) {
             if (jsonObject.code === 1111) {
