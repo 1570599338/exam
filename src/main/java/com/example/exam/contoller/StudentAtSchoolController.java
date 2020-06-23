@@ -59,32 +59,13 @@ public class StudentAtSchoolController {
 
     @ResponseBody
     @RequestMapping("/pageList")
-    public JsonResult selectExam(HttpServletResponse response){//, @RequestParam(name = "draw")Integer draw, @RequestParam(name = "start")Integer start) {
+    public JsonResult selectExam(HttpServletResponse response, @RequestParam(name = "admissionNumber")String admissionNumberx, String admissionNumber) {
+        System.out.println("*************"+admissionNumber+"*********"+admissionNumberx);
 
-       // int length = 5;//固定前台展示的每页记录数，否则用length值
-      //  PageHelper.startPage(start==null?0:start / length + 1, length);
-   /**     JsonObject jsonResponse = new JsonObject();
-        List<Template> list=null;
-        String searchValue = request.getParameter("search[value]");//实现搜索功能
-        if("".equals(searchValue)){
-        list = tem.findAllList();
-        }else{
-    list = tem.searchListByName("%" + searchValue + "%");
-        }
-        jsonResponse.addProperty("draw", draw);
-        jsonResponse.addProperty("recordsTotal", ((Page<Tem>) list).getTotal());
-        jsonResponse.addProperty("recordsFiltered",((Page<Tem>) list).getTotal());
-        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm")
-                .create();
-        jsonResponse.add("data", gson.toJsonTree(list));
-        return jsonResponse.toString();
-    **/
+
         try {
-            List<StudentBasicInfomation> list = service.StudentBasicInfomationList();
-//            Map<String,Object> map = new HashMap<>();
-//            map.put("draw", draw);
-//            map.put("recordsTotal", ((Page<Zjkscx>) list).getTotal());
-//            map.put("recordsFiltered",((Page<Zjkscx>) list).getTotal());
+            List<StudentBasicInfomation> list = service.StudentBasicInfomationList( admissionNumber);
+
             return new JsonResult(Const.RESULT_SUCCESS_CODE, Const.RESULT_SUCCESS_MSG, list == null ? new ArrayList<StudentBasicInfomation>() : list);
         } catch (Exception e) {
             e.printStackTrace();

@@ -17,5 +17,5 @@ import java.util.List;
  **/
 public interface IStudentBasicInfomationService {
 
-    public List<StudentBasicInfomation> StudentBasicInfomationList();
+    public List<StudentBasicInfomation> StudentBasicInfomationList(String admissionNumber);
 }

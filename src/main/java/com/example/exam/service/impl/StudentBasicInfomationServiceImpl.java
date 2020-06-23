@@ -33,7 +33,9 @@ public class StudentBasicInfomationServiceImpl implements IStudentBasicInfomatio
 
 
     @Override
-    public List<StudentBasicInfomation> StudentBasicInfomationList() {
-        return studentBasicInfomationMapper.StudentBasicInfomationList();
+    public List<StudentBasicInfomation> StudentBasicInfomationList(String admissionNumber) {
+        return studentBasicInfomationMapper.StudentBasicInfomationList(admissionNumber);
     }
+
+
 }

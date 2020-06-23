@@ -35,37 +35,42 @@
         <!-- Main content -->
         <!--/*--> 业务界面写在这个section内。 <!--*/-->
         <section class="content" layout:fragment="main-content">
-            <div class="row">
-                <div class="col-xs-12">
-                    <div class="box">
-                        <div class="box-header">
-                            <h3 class="box-title">Hover Data Table</h3>
+            <div class="box-body" style="padding: 50px;border: 1px solid blue;">
+                <div class="clearfix">
+                    <form class="form-horizontal">
+
+                        <div class="form-group clearfix" >
+
+                                <label style="display:block;float:left;width:65px;" class="col-md-1  control-label">学籍号</label>
+                                <div class="col-md-2" style="float:left;width:100px;">
+                                    <input type="text" style="width:160px;height:26px" class="input-sm form-control" id="admissionNumber" name="admissionNumber" placeholder="请输入登录名称...">
+                                </div>
+
+
+
+                            &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp; &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp; &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;
+                            <button type="button" onclick="user_list_query();" class="btn btn-sm btn-primary" ><i class="fa fa-search"></i>搜索</button>
+<!--                            <button type="button" onclick="user_list_add();" class="btn btn-sm btn-success" ><i class="fa fa-square-o"></i>增加</button>-->
+<!--                            <button type="button" onclick="user_list_delete('1');" class="btn btn-sm btn-danger" ><i class="fa fa-remove"></i>删除</button>-->
+<!--                            <button  type="button" onclick="user_list_reset();" class="btn btn-sm btn-default">重置</button>-->
                         </div>
-                        <!-- /.box-header -->
-                        <div class="box-body">
-                            <table id="example2" class="table table-bordered table-hover">
-                                <thead>
-                                <tr>
-                                    <th>学籍编号</th>
-                                    <th>studentId</th>
-                                    <th>examRound</th>
-                                    <th>proposedMajor</th>
-                                    <th>postecode</th>
-                                </tr>
-                                </thead>
-
-
-                            </table>
-                        </div>
-                        <!-- /.box-body -->
-                    </div>
-                    <!-- /.box -->
-
-                    <!-- /.col -->
+                    </form>
                 </div>
-                <!-- /.row -->
+                <table id="user_tab" class="table table-striped table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th><input type="checkbox" title="全选" /></th>
+                        <th>学籍编号</th>
+                        <th>StudentId</th>
+                        <th>登性别</th>
+                        <th>用户名</th>
+                        <th>加入时间</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                </table>
             </div>
-    <!-- /.row -->
+
 
     </section>
     <!-- /.content -->
@@ -91,68 +96,6 @@
     <script th:src="@{~/dist/js/{jslink}(jslink=${pagejs})}"></script>
 
 </th:block>
-<script>
-    let zjkscxJq = $("#zjkscx-form [name=zjkscx]");
-    $("#zjksccx-form [name=zjkscx]").click(function () {
-        var url="/examround/selectExam"; //访问后台去数据库查询select的选项,此处需填写后台接口路径
-        $.ajax({
-            type:"get",
-            url:url,
-            success:function(userList){
-                var unitObj=document.getElementById("mySelect"); //页面上的<html:select>元素
-                if(userList.code==9999){
-                    msgJq.addClass('text-danger');
-                    msgJq.text(userList.message);
-                }
-                $("#mySelect").empty();
-                unitObj.options.add(new Option("请选考次","",true,true));
-                if(userList!=null){ //后台传回来的select选项
-                    for(var i=0;i<userList.data.length;i++){
-                        //遍历后台传回的结果，一项项往select中添加option
-                        unitObj.options.add(new Option(userList.data[i].examround,userList.data[i].examround));
-                    }
-                }
-            },
-            error:function(){
-                msgJq.alert('Error');
-            }
-        })
-    });
 
-
-    $("#zjkscx-form button").click(function () {
-
-
-
-        var options=$("#mySelect option:selected");//获取选中的项
-        var optionValue = options.val();
-        var optionText = options.text();
-        // alert("jquery方法拿到选中项的值： " + options.val());
-        // alert("jquery方法拿到选中项的文本： " + options.text());
-
-
-        let zjkscx = zjkscxJq.val();
-        let url = "/zjkscx/showzjks";
-        let dataObj = {
-            value: optionValue,
-            text: optionText
-        }
-
-        $.post(url, dataObj, function (jsonObject) {
-            if (jsonObject.hasOwnProperty('code')) {
-                if (jsonObject.code === 1111) {
-                    alert(jsonObject.message);
-                    location.replace('/');
-                }else{
-                    // msgJq.removeClass('text-danger');
-                    // msgJq.addClass('text-info');
-                    alert(jsonObject.message);
-                }
-            }
-        });
-
-
-    });
-</script>
 </body>
 </html>
